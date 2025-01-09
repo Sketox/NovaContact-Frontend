@@ -36,17 +36,17 @@ export default function ContactsPage() {
       </nav>
 
       <div className="container mt-5">
-        <h1 className="d-flex justify-content-between align-items-center text-dark mb-4">
+        <h1 className="d-flex justify-content-between align-items-center text-dark mb-5">
           {/* Título e ícono */}
           <div>
             Contacts
             <img
-              src="https://img.icons8.com/?size=100&id=11490&format=png&color=000000"
-              alt="Planet Icon"
-              width="90"
-              height="90"
-              className="ms-2"
-            />
+              src="data:image/png;base64,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"
+              width="50"
+              height="50"
+              alt="planet"
+              class="m-2"
+            ></img>
           </div>
 
           {/* Barra de búsqueda con botón */}
