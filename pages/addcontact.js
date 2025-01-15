@@ -1,10 +1,53 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import axios from "axios";
 
 export default function AddContact() {
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Contacto añadido');
+
+    // Obtener los valores del formulario
+    const name = e.target.name.value;
+    const number = e.target.number.value;
+    const email = e.target.email.value;
+    const notes = e.target.notes.value;
+
+    // Obtener el userId desde localStorage
+    const userId =
+      typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+    if (!userId) {
+      alert(
+        "No se encontró el ID de usuario. Por favor, inicie sesión nuevamente."
+      );
+      return;
+    }
+
+    // Crear un objeto con los datos del formulario
+    const contactData = {
+      userId, // Incluimos el ID del usuario
+      name,
+      number,
+      email,
+      notes,
+    };
+
+    try {
+      // Enviar los datos al servidor usando Axios
+      const response = await axios.post(
+        "https://aac7-190-15-130-164.ngrok-free.app/tutorial/createData",
+        contactData
+      );
+
+      console.log("Response from server:", response.data);
+      alert("¡Contacto añadido exitosamente!");
+
+      // Redirigir a la página de contactos después de añadir el contacto
+      window.location.href = "/contacts";
+    } catch (error) {
+      console.error("Error adding contact:", error);
+      alert("Hubo un error al añadir el contacto, por favor intente de nuevo.");
+    }
   };
 
   return (
@@ -35,7 +78,13 @@ export default function AddContact() {
             <div className="card shadow p-4">
               <h1 className="text-center mb-4">
                 Add Contact
-                <i className="bi bi-person-plus ms-2"></i>
+                <img
+                  src="/Spacegun.png"
+                  alt="Spacegun Icon"
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-text-center m-2"
+                />
               </h1>
 
               <form onSubmit={handleSubmit}>
@@ -47,44 +96,52 @@ export default function AddContact() {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name</label>
+                  <label htmlFor="name" className="form-label">
+                    Name
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     id="name"
-                    placeholder="Value"
+                    placeholder="Enter contact name"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="number" className="form-label">Number</label>
+                  <label htmlFor="number" className="form-label">
+                    Number
+                  </label>
                   <input
                     type="tel"
                     className="form-control"
                     id="number"
-                    placeholder="Value"
+                    placeholder="Enter phone number"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email (Opcional)</label>
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
                   <input
                     type="email"
                     className="form-control"
                     id="email"
-                    placeholder="Value"
+                    placeholder="Enter email"
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="notes" className="form-label">Notes</label>
+                  <label htmlFor="notes" className="form-label">
+                    Notes
+                  </label>
                   <textarea
                     className="form-control"
                     id="notes"
                     rows="3"
-                    placeholder="Value"
+                    placeholder="Additional notes"
                   ></textarea>
                 </div>
 

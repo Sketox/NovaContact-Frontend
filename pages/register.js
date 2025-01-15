@@ -1,11 +1,45 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Register() {
-  const handleSubmit = (e) => {
+  const router = useRouter(); // Hook de Next.js para manejar la navegación
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí irá la lógica de registro
-    console.log('Formulario enviado');
+
+    // Obtener los valores del formulario
+    const fullName = e.target.username.value;
+    const password = e.target.password.value;
+    const email = e.target.email.value;
+
+    // Crear un objeto con los datos del formulario
+    const formData = {
+      fullName,
+      password,
+      email,
+    };
+
+    try {
+      // Enviar los datos al servidor usando Axios
+      const response = await axios.post(
+        "https://aac7-190-15-130-164.ngrok-free.app/user/createUser",
+        formData
+      );
+
+      // Mostrar la respuesta del servidor
+      console.log("Response from server:", response.data);
+
+      // Notificar al usuario que el registro fue exitoso
+      alert("Registro exitoso!");
+
+      // Redirigir al usuario a la vista de Login
+      router.push("/login");
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Hubo un error al registrarse, por favor intente de nuevo.");
+    }
   };
 
   return (
@@ -32,24 +66,34 @@ export default function Register() {
           <div className="col-md-6">
             <div className="card shadow p-4">
               <h1 className="text-center mb-4">
-                Registro
-                <i className="bi bi-satellite ms-2"></i>
+                Register
+                <img
+                  src="/Satellite.png"
+                  alt="Satellite Icon"
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-text-center m-2"
+                />
               </h1>
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="fullName" className="form-label">Full Name</label>
+                  <label htmlFor="username" className="form-label">
+                    Username
+                  </label>
                   <input
                     type="text"
                     className="form-control"
-                    id="fullName"
-                    placeholder="Enter your full name"
+                    id="username"
+                    placeholder="Enter your username"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="password" className="form-label">Password</label>
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
                   <input
                     type="password"
                     className="form-control"
@@ -60,23 +104,14 @@ export default function Register() {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
                   <input
                     type="email"
                     className="form-control"
                     id="email"
                     placeholder="Enter your email"
-                    required
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="number" className="form-label">Number</label>
-                  <input
-                    type="tel"
-                    className="form-control"
-                    id="number"
-                    placeholder="Enter your phone number"
                     required
                   />
                 </div>
@@ -92,7 +127,9 @@ export default function Register() {
                     I accept the terms
                   </label>
                   <div>
-                    <a href="#" className="text-decoration-none">Read our T&Cs</a>
+                    <a href="#" className="text-dark">
+                      Read our T&Cs
+                    </a>
                   </div>
                 </div>
 

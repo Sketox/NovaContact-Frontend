@@ -9,7 +9,13 @@ export default function Contact() {
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             <span className="ms-4 me-2">NovaContact</span>
-            <span>★</span>
+            <img
+              src="/NovaContactLogo.svg"
+              alt="NovaContact Logo"
+              width="30"
+              height="30"
+              className="d-inline-block align-text-center"
+            />
           </a>
           <a href="/contacts" className="btn btn-dark me-4">
             Contacts
@@ -24,7 +30,13 @@ export default function Contact() {
             <div className="card shadow p-4">
               <h1 className="text-center mb-4">
                 Contact
-                <i className="bi bi-person ms-2"></i>
+                <img
+                  src="/Spacefighter.png"
+                  alt="Spacefighter Icon"
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-text-center m-2"
+                />
               </h1>
 
               {/* Área de imagen */}
@@ -55,7 +67,7 @@ export default function Contact() {
               </div>
 
               <div className="mb-3">
-                <label className="form-label">Email (Opcional)</label>
+                <label className="form-label">Email</label>
                 <input
                   type="email"
                   className="form-control bg-light"
@@ -74,7 +86,7 @@ export default function Contact() {
                 ></textarea>
               </div>
 
-              <a href="/edit-contact" className="btn btn-dark w-100">
+              <a href="/editcontact" className="btn btn-dark w-100">
                 Edit
               </a>
             </div>

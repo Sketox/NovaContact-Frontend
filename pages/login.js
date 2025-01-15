@@ -1,8 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,27 +10,53 @@ export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  // Verificar si el usuario ya está autenticado al cargar la página
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      localStorage.getItem("isAuthenticated")
+    ) {
+      router.push("/contacts"); // Redirigir a la página de contactos
+    }
+
+    // Cargar email y password del localStorage si existen
+    if (typeof window !== "undefined") {
+      const storedEmail = localStorage.getItem("email");
+      const storedPassword = localStorage.getItem("password");
+
+      if (storedEmail) {
+        setEmail(storedEmail);
+      }
+      if (storedPassword) {
+        setPassword(storedPassword);
+      }
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Simulando inicio de sesión con email y contraseña
-      if (email === "user@example.com" && password === "password123") {
-        router.push("/dashboard"); // Redirigir al usuario
-      } else {
-        throw new Error("Invalid credentials");
+      // Enviar los datos de inicio de sesión a la API mediante una solicitud POST
+      const response = await axios.post(
+        "https://aac7-190-15-130-164.ngrok-free.app/user/authenticate",
+        {
+          email,
+          password,
+        }
+      );
+
+      if (response.status === 201) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("email", email);
+          localStorage.setItem("password", password);
+          localStorage.setItem("userId", response.data.id); // Guardar el ID del usuario
+        }
+        router.push("/contacts");
       }
     } catch (err) {
+      // Manejar errores y mostrar mensaje
       setError("Invalid email or password");
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      // Simulando inicio de sesión con Google
-      console.log("Simulating Google login");
-      router.push("/dashboard");
-    } catch (err) {
-      setError("Error with Google login");
     }
   };
 
@@ -54,14 +80,14 @@ export default function Login() {
 
       {/* Título */}
       <div className="container mt-4 text-center">
-        <h1 className="text-dark mb-4">
+        <h1 className="text-dark m-5">
           Login
           <img
             width="50"
             height="50"
             src="https://img.icons8.com/ios-filled/50/space-shuttle.png"
             alt="space-shuttle"
-            class="m-2"
+            className="m-2"
           />
         </h1>
       </div>
@@ -80,7 +106,10 @@ export default function Login() {
                 id="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  localStorage.setItem("email", e.target.value); // Guardar en localStorage
+                }}
                 required
               />
             </div>
@@ -94,7 +123,10 @@ export default function Login() {
                 id="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  localStorage.setItem("password", e.target.value); // Guardar en localStorage
+                }}
                 required
               />
             </div>
@@ -102,7 +134,7 @@ export default function Login() {
             <button type="submit" className="btn btn-dark w-100">
               Sign in
             </button>
-            <div className="text-center mt-3">
+            <div className="text-start mt-3">
               <a href="/register" className="text-dark">
                 Don't have an account? Sign up
               </a>
