@@ -16,6 +16,9 @@ export default function AddContact() {
     const userId =
       typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
+    console.log("User ID retrieved from localStorage:", userId);
+    console.log(localStorage);
+
     if (!userId) {
       alert(
         "No se encontró el ID de usuario. Por favor, inicie sesión nuevamente."
@@ -35,7 +38,7 @@ export default function AddContact() {
     try {
       // Enviar los datos al servidor usando Axios
       const response = await axios.post(
-        "https://aac7-190-15-130-164.ngrok-free.app/tutorial/createData",
+        "https://0066-2800-bf0-a40c-125a-f8d9-77b7-6277-4a9d.ngrok-free.app/tutorial/createData",
         contactData
       );
 

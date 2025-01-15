@@ -36,26 +36,42 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Enviar los datos de inicio de sesión a la API mediante una solicitud POST
+      // Realizar solicitud de autenticación
       const response = await axios.post(
-        "https://aac7-190-15-130-164.ngrok-free.app/user/authenticate",
+        "https://0066-2800-bf0-a40c-125a-f8d9-77b7-6277-4a9d.ngrok-free.app/user/authenticate",
         {
           email,
           password,
         }
       );
 
+      console.log("Response from API:", response.data); // Muestra la respuesta completa
+      const userIdFromAuth = response.data.id; // Extraer el userId de la autenticación
+
       if (response.status === 201) {
+        // Obtener datos de contacto asociados al userId
+        const contactResponse = await axios.get(
+          `https://0066-2800-bf0-a40c-125a-f8d9-77b7-6277-4a9d.ngrok-free.app/tutorial/getContact/${userIdFromAuth}`
+        );
+
+        console.log("Contact data from contactResponse:", contactResponse.data);
+
+        const userId = contactResponse.userId; // Extraer el userId del contacto
+        console.log("userId from contactResponse:", userId);
+
+        // Guardar datos en localStorage
         if (typeof window !== "undefined") {
           localStorage.setItem("isAuthenticated", "true");
           localStorage.setItem("email", email);
           localStorage.setItem("password", password);
-          localStorage.setItem("userId", response.data.id); // Guardar el ID del usuario
+          localStorage.setItem("userId", userId); // Guardar el userId obtenido del contactResponse
         }
+
+        // Redirigir a la página de contactos
         router.push("/contacts");
       }
     } catch (err) {
-      // Manejar errores y mostrar mensaje
+      console.error("Error during login:", err.response?.data || err.message);
       setError("Invalid email or password");
     }
   };
