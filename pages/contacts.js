@@ -1,44 +1,57 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function ContactsPage() {
   const router = useRouter();
+  const [contacts, setContacts] = useState([]);
 
-  const contacts = [
-    {
-      id: 1,
-      name: "John Doe",
-      phone: "123-456-7890",
-      email: "john@example.com",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      phone: "987-654-3210",
-      email: "jane@example.com",
-    },
-  ];
+  useEffect(() => {
+    const fetchContacts = async () => {
+      const userId = localStorage.getItem("userId");
+      console.log("User ID:", userId); // Verificar que se obtiene el userId
 
-  // Función para manejar el log out
+      try {
+        const response = await axios.get(
+          `https://819f-2800-bf0-a40c-125a-2527-aa7-b3d3-7ba0.ngrok-free.app/getcontact/${userId}`
+        );
+
+        console.log("Response from API:", response); // Verifica la respuesta completa de la API
+        console.log("Response Data:", response.data); // Verifica los datos específicos
+
+        // Verificar si la respuesta es un array y establecer el estado
+        if (Array.isArray(response.data)) {
+          setContacts(response.data);
+        } else {
+          console.error("La respuesta no es un array", response.data);
+          setContacts([]); // Establecer como un array vacío si no es válido
+        }
+      } catch (error) {
+        console.error("Error fetching contacts:", error);
+      }
+    };
+
+    fetchContacts();
+  }, []);
+
   const handleLogout = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("isAuthenticated"); // Eliminar indicador de autenticación
-      localStorage.removeItem("email"); // Opcional: Eliminar email guardado
-      localStorage.removeItem("password"); // Opcional: Eliminar password guardado
-      localStorage.removeItem("userId"); // Opcional: Eliminar userId
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("email");
+      localStorage.removeItem("password");
+      localStorage.removeItem("userId");
     }
-    router.push("/login"); // Redirigir al usuario a la página de inicio de sesión
+    router.push("/login");
   };
 
-  // Función para redirigir a la vista /addcontact
   const handleAddContact = () => {
     router.push("/addcontact");
   };
 
   return (
     <div>
-      {/* Navbar */}
       <nav className="navbar navbar-light bg-light">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
@@ -51,7 +64,6 @@ export default function ContactsPage() {
               className="d-inline-block align-text-center"
             />
           </a>
-          {/* Botón de Log Out */}
           <button className="btn btn-outline-danger" onClick={handleLogout}>
             Log Out
           </button>
@@ -60,7 +72,6 @@ export default function ContactsPage() {
 
       <div className="container mt-5">
         <h1 className="d-flex justify-content-between align-items-center text-dark mb-5">
-          {/* Título e ícono */}
           <div>
             Contacts
             <img
@@ -71,53 +82,42 @@ export default function ContactsPage() {
               className="d-inline-block align-text-center m-2"
             />
           </div>
-
-          {/* Barra de búsqueda con botón */}
-          <div className="input-group w-25">
-            <input
-              type="text"
-              className="form-control custom-input"
-              placeholder="Search contacts"
-              aria-label="Search contacts"
-              aria-describedby="button-addon2"
-            />
-            <button className="btn btn-dark" type="button" id="button-addon2">
-              <i className="bi bi-search"></i>
-            </button>
-          </div>
         </h1>
 
-        {/* Tarjetas de Contactos (horizontal) */}
         <div className="mt-5">
-          {contacts.map((contact) => (
-            <div className="card mb-3" key={contact.id}>
-              <div className="row g-0 d-flex align-items-center">
-                <div className="col-md-3 p-0">
-                  <img
-                    src="https://via.placeholder.com/160"
-                    className="img-fluid rounded-start"
-                    alt="Contact"
-                  />
-                </div>
-                <div className="col-md-9 p-0">
-                  <div className="card-body p-2">
-                    <h5 className="card-title m-0">{contact.name}</h5>
-                    <p className="card-text m-0">
-                      <strong>Phone:</strong> {contact.phone} <br />
-                      <strong>Email:</strong> {contact.email}
-                    </p>
-                    <a href="#" className="btn btn-outline-dark mt-2">
-                      Edit
-                    </a>
+          {contacts.length > 0 ? (
+            contacts.map((contact) => (
+              <div className="card mb-3" key={contact.id}>
+                <div className="row g-0 d-flex align-items-center">
+                  <div className="col-md-3 p-0">
+                    <img
+                      src="https://via.placeholder.com/160"
+                      className="img-fluid rounded-start"
+                      alt="Contact"
+                    />
+                  </div>
+                  <div className="col-md-9 p-0">
+                    <div className="card-body p-2">
+                      <h5 className="card-title m-0">{contact.name}</h5>
+                      <p className="card-text m-0">
+                        <strong>Phone:</strong> {contact.phone} <br />
+                        <strong>Email:</strong> {contact.email}
+                      </p>
+                      <a href="#" className="btn btn-outline-dark mt-2">
+                        Edit
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No contacts found</p>
+          )}
         </div>
         <button
           type="button"
-          onClick={handleAddContact} // Llama a la función para redirigir
+          onClick={handleAddContact}
           className="btn btn-dark btn-lg btn-level-block mt-3"
         >
           Add Contact

@@ -38,7 +38,7 @@ export default function Login() {
     try {
       // Realizar solicitud de autenticación
       const response = await axios.post(
-        "https://0066-2800-bf0-a40c-125a-f8d9-77b7-6277-4a9d.ngrok-free.app/user/authenticate",
+        "https://819f-2800-bf0-a40c-125a-2527-aa7-b3d3-7ba0.ngrok-free.app/user/authenticate",
         {
           email,
           password,
@@ -46,30 +46,18 @@ export default function Login() {
       );
 
       console.log("Response from API:", response.data); // Muestra la respuesta completa
-      const userIdFromAuth = response.data.id; // Extraer el userId de la autenticación
+      const userId = response.data.userId; // Extraer el userId correctamente del response
 
-      if (response.status === 201) {
-        // Obtener datos de contacto asociados al userId
-        const contactResponse = await axios.get(
-          `https://0066-2800-bf0-a40c-125a-f8d9-77b7-6277-4a9d.ngrok-free.app/tutorial/getContact/${userIdFromAuth}`
-        );
-
-        console.log("Contact data from contactResponse:", contactResponse.data);
-
-        const userId = contactResponse.userId; // Extraer el userId del contacto
-        console.log("userId from contactResponse:", userId);
-
-        // Guardar datos en localStorage
-        if (typeof window !== "undefined") {
-          localStorage.setItem("isAuthenticated", "true");
-          localStorage.setItem("email", email);
-          localStorage.setItem("password", password);
-          localStorage.setItem("userId", userId); // Guardar el userId obtenido del contactResponse
-        }
-
-        // Redirigir a la página de contactos
-        router.push("/contacts");
+      // Guardar datos en localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+        localStorage.setItem("userId", userId); // Guardar el userId obtenido del endpoint
       }
+
+      // Redirigir a la página de contactos
+      router.push("/contacts");
     } catch (err) {
       console.error("Error during login:", err.response?.data || err.message);
       setError("Invalid email or password");
