@@ -38,7 +38,7 @@ export default function Login() {
     try {
       // Realizar solicitud de autenticación
       const response = await axios.post(
-        "https://819f-2800-bf0-a40c-125a-2527-aa7-b3d3-7ba0.ngrok-free.app/user/authenticate",
+        "https://d186-190-155-72-128.ngrok-free.app/user/authenticate",
         {
           email,
           password,
@@ -46,7 +46,7 @@ export default function Login() {
       );
 
       console.log("Response from API:", response.data); // Muestra la respuesta completa
-      const userId = response.data.userId; // Extraer el userId correctamente del response
+      const userId = response.data.userId; // Extraer el userId del response
 
       // Guardar datos en localStorage
       if (typeof window !== "undefined") {

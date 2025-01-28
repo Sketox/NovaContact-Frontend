@@ -15,7 +15,7 @@ export default function ContactsPage() {
 
       try {
         const response = await axios.get(
-          `https://819f-2800-bf0-a40c-125a-2527-aa7-b3d3-7ba0.ngrok-free.app/getcontact/${userId}`
+          `https://d186-190-155-72-128.ngrok-free.app/getcontact/${userId}`
         );
 
         console.log("Response from API:", response); // Verifica la respuesta completa de la API

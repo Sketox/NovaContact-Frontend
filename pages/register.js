@@ -24,7 +24,7 @@ export default function Register() {
     try {
       // Enviar los datos al servidor usando Axios
       const response = await axios.post(
-        "https://819f-2800-bf0-a40c-125a-2527-aa7-b3d3-7ba0.ngrok-free.app/user/createUser",
+        "https://d186-190-155-72-128.ngrok-free.app/user/createUser",
         formData
       );
 
