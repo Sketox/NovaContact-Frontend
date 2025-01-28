@@ -4,6 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+// Configurar Axios con ngrok y CORS
+const instance = axios.create({
+  baseURL: "https://4b69-2800-bf0-a40c-125a-6458-cf98-a94c-fba.ngrok-free.app",
+  withCredentials: true,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
+});
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,13 +46,10 @@ export default function Login() {
     e.preventDefault();
     try {
       // Realizar solicitud de autenticación
-      const response = await axios.post(
-        "https://d186-190-155-72-128.ngrok-free.app/user/authenticate",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await instance.post("/user/authenticate", {
+        email,
+        password,
+      });
 
       console.log("Response from API:", response.data); // Muestra la respuesta completa
       const userId = response.data.userId; // Extraer el userId del response

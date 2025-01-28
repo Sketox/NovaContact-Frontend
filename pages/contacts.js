@@ -4,6 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+// Configurar Axios con ngrok y CORS
+const instance = axios.create({
+  baseURL: "https://4b69-2800-bf0-a40c-125a-6458-cf98-a94c-fba.ngrok-free.app",
+  withCredentials: true,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
+});
+
 export default function ContactsPage() {
   const router = useRouter();
   const [contacts, setContacts] = useState([]);
@@ -13,28 +22,28 @@ export default function ContactsPage() {
       const userId = localStorage.getItem("userId");
       console.log("User ID:", userId); // Verificar que se obtiene el userId
 
+      if (!userId) {
+        router.push("/login"); // Si no hay userId, redirigir al login
+        return;
+      }
+
       try {
-        const response = await axios.get(
-          `https://d186-190-155-72-128.ngrok-free.app/getcontact/${userId}`
-        );
+        const response = await instance.get(`/tutorial/getContact/${userId}`);
+        console.log("Response from API:", response);
+        console.log("Response Data:", response.data);
 
-        console.log("Response from API:", response); // Verifica la respuesta completa de la API
-        console.log("Response Data:", response.data); // Verifica los datos específicos
+        // Convertir el objeto recibido en un arreglo
+        const contactArray = Object.values(response.data);
 
-        // Verificar si la respuesta es un array y establecer el estado
-        if (Array.isArray(response.data)) {
-          setContacts(response.data);
-        } else {
-          console.error("La respuesta no es un array", response.data);
-          setContacts([]); // Establecer como un array vacío si no es válido
-        }
+        // Establecer el estado de los contactos
+        setContacts(contactArray);
       } catch (error) {
         console.error("Error fetching contacts:", error);
       }
     };
 
     fetchContacts();
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
@@ -87,7 +96,7 @@ export default function ContactsPage() {
         <div className="mt-5">
           {contacts.length > 0 ? (
             contacts.map((contact) => (
-              <div className="card mb-3" key={contact.id}>
+              <div className="card mb-3" key={contact.userId}>
                 <div className="row g-0 d-flex align-items-center">
                   <div className="col-md-3 p-0">
                     <img
@@ -100,10 +109,13 @@ export default function ContactsPage() {
                     <div className="card-body p-2">
                       <h5 className="card-title m-0">{contact.name}</h5>
                       <p className="card-text m-0">
-                        <strong>Phone:</strong> {contact.phone} <br />
-                        <strong>Email:</strong> {contact.email}
+                        <strong>Phone:</strong> {contact.number} <br />
+                        <strong>Email:</strong> {contact.email || "N/A"}
                       </p>
-                      <a href="#" className="btn btn-outline-dark mt-2">
+                      <a
+                        href={`/editcontact/${contact.userId}`} // Enlace para editar el contacto
+                        className="btn btn-outline-dark mt-2"
+                      >
                         Edit
                       </a>
                     </div>
@@ -115,6 +127,7 @@ export default function ContactsPage() {
             <p>No contacts found</p>
           )}
         </div>
+
         <button
           type="button"
           onClick={handleAddContact}

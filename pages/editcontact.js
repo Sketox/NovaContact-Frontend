@@ -1,25 +1,105 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
+// Configurar Axios con ngrok y CORS
+const instance = axios.create({
+  baseURL: "https://4b69-2800-bf0-a40c-125a-6458-cf98-a94c-fba.ngrok-free.app",
+  withCredentials: true,
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
+});
 
 export default function EditContact() {
-  const handleSubmit = (e) => {
+  const router = useRouter();
+  const { contactId } = router.query; // Obtener el contactId de la URL
+  const [contact, setContact] = useState({
+    name: "",
+    number: "",
+    email: "",
+    notes: "",
+  });
+
+  // Cargar los datos del contacto al cargar la página
+  useEffect(() => {
+    const fetchContactData = async () => {
+      if (contactId) {
+        try {
+          const userId = localStorage.getItem("userId");
+
+          if (!userId) {
+            router.push("/login"); // Redirigir si no hay userId
+            return;
+          }
+
+          // Reemplazar la URL con la correcta
+          const response = await instance.get(`/user/getContact/${userId}`);
+          setContact({
+            name: response.data.name || "",
+            number: response.data.number || "",
+            email: response.data.email || "",
+            notes: response.data.notes || "",
+          });
+        } catch (error) {
+          console.error("Error fetching contact:", error);
+        }
+      }
+    };
+
+    fetchContactData();
+  }, [contactId, router]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Contacto editado");
+    try {
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        router.push("/login"); // Redirigir si no hay userId
+        return;
+      }
+
+      // Reemplazar la URL con la correcta para el PUT
+      const response = await instance.put(
+        `/user/editContact/${contactId}`,
+        contact
+      );
+      console.log("Contacto editado con éxito:", response.data);
+      router.push("/contacts"); // Redirigir a la lista de contactos después de editar
+    } catch (error) {
+      console.error("Error al editar el contacto:", error);
+    }
   };
 
   const handleDelete = async () => {
-    // Aquí puedes poner la lógica para eliminar el contacto, por ejemplo, enviando una solicitud al backend
-    console.log("Contacto eliminado");
-
     try {
-      const response = await axios.delete(
-        "https://aac7-190-15-130-164.ngrok-free.app/contacts/1"
-      ); // Usa el id correcto aquí
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        router.push("/login"); // Redirigir si no hay userId
+        return;
+      }
+
+      // Reemplazar la URL con la correcta para el DELETE
+      const response = await instance.delete(
+        `/user/deleteContact/${contactId}`
+      );
       console.log("Contacto eliminado con éxito:", response.data);
+      router.push("/contacts"); // Redirigir a la lista de contactos después de eliminar
     } catch (error) {
       console.error("Error al eliminar el contacto:", error);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setContact((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   return (
@@ -75,7 +155,9 @@ export default function EditContact() {
                     type="text"
                     className="form-control"
                     id="name"
-                    placeholder="Value"
+                    name="name"
+                    value={contact.name}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -88,7 +170,9 @@ export default function EditContact() {
                     type="tel"
                     className="form-control"
                     id="number"
-                    placeholder="Value"
+                    name="number"
+                    value={contact.number}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -101,7 +185,9 @@ export default function EditContact() {
                     type="email"
                     className="form-control"
                     id="email"
-                    placeholder="Value"
+                    name="email"
+                    value={contact.email}
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -112,8 +198,10 @@ export default function EditContact() {
                   <textarea
                     className="form-control"
                     id="notes"
+                    name="notes"
                     rows="3"
-                    placeholder="Value"
+                    value={contact.notes}
+                    onChange={handleChange}
                   ></textarea>
                 </div>
 
