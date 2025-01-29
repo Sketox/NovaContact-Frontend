@@ -6,7 +6,7 @@ import axios from "axios";
 
 // Configurar Axios con ngrok y CORS
 const instance = axios.create({
-  baseURL: "https://4b69-2800-bf0-a40c-125a-6458-cf98-a94c-fba.ngrok-free.app",
+  baseURL: "https://7dc3-186-70-178-190.ngrok-free.app",
   withCredentials: true,
   headers: {
     "ngrok-skip-browser-warning": "true",

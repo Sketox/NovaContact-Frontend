@@ -38,7 +38,7 @@ export default function AddContact() {
     try {
       // Enviar los datos al servidor usando Axios
       const response = await axios.post(
-        "https://da65-2800-bf0-a40c-125a-6458-cf98-a94c-fba.ngrok-free.app/tutorial/createData",
+        "https://7dc3-186-70-178-190.ngrok-free.app/tutorial/createData",
         contactData
       );
 
