@@ -1,17 +1,7 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import "../utils/globals";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
-
-// Configurar Axios con ngrok y CORS
-const instance = axios.create({
-  baseURL: "https://7dc3-186-70-178-190.ngrok-free.app",
-  withCredentials: true,
-  headers: {
-    "ngrok-skip-browser-warning": "true",
-  },
-});
+import api from "../utils/api"; // Importar configuración de Axios
 
 export default function ContactsPage() {
   const router = useRouter();
@@ -28,7 +18,7 @@ export default function ContactsPage() {
       }
 
       try {
-        const response = await instance.get(`/tutorial/getContact/${userId}`);
+        const response = await api.get(`/tutorial/getContact/${userId}`);
         console.log("Response from API:", response);
         console.log("Response Data:", response.data);
 

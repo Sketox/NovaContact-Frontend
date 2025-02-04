@@ -1,7 +1,6 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import axios from "axios";
+import "../utils/globals";
 import { useRouter } from "next/router";
+import api from "../utils/api"; // Importar configuración de Axios
 
 export default function Register() {
   const router = useRouter(); // Hook de Next.js para manejar la navegación
@@ -23,10 +22,7 @@ export default function Register() {
 
     try {
       // Enviar los datos al servidor usando Axios
-      const response = await axios.post(
-        "https://7dc3-186-70-178-190.ngrok-free.app/user/createUser",
-        formData
-      );
+      const response = await api.post("/user/createUser", formData);
 
       // Mostrar la respuesta del servidor
       console.log("Response from server:", response.data);

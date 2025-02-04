@@ -1,6 +1,5 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import axios from "axios";
+import "../utils/globals";
+import api from "../utils/api"; // Importar configuración de Axios
 
 export default function AddContact() {
   const handleSubmit = async (e) => {
@@ -17,7 +16,6 @@ export default function AddContact() {
       typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
     console.log("User ID retrieved from localStorage:", userId);
-    console.log(localStorage);
 
     if (!userId) {
       alert(
@@ -37,10 +35,7 @@ export default function AddContact() {
 
     try {
       // Enviar los datos al servidor usando Axios
-      const response = await axios.post(
-        "https://7dc3-186-70-178-190.ngrok-free.app/tutorial/createData",
-        contactData
-      );
+      const response = await api.post("/tutorial/createData", contactData);
 
       console.log("Response from server:", response.data);
       alert("¡Contacto añadido exitosamente!");

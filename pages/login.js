@@ -1,17 +1,7 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import "../utils/globals";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
-
-// Configurar Axios con ngrok y CORS
-const instance = axios.create({
-  baseURL: "https://7dc3-186-70-178-190.ngrok-free.app",
-  withCredentials: true,
-  headers: {
-    "ngrok-skip-browser-warning": "true",
-  },
-});
+import api from "../utils/api"; // Importar configuración de Axios
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -45,21 +35,21 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Realizar solicitud de autenticación
-      const response = await instance.post("/user/authenticate", {
+      // Realizar solicitud de autenticación con API
+      const response = await api.post("/user/authenticate", {
         email,
         password,
       });
 
-      console.log("Response from API:", response.data); // Muestra la respuesta completa
-      const userId = response.data.userId; // Extraer el userId del response
+      console.log("Response from API:", response.data);
+      const userId = response.data.userId;
 
       // Guardar datos en localStorage
       if (typeof window !== "undefined") {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("email", email);
         localStorage.setItem("password", password);
-        localStorage.setItem("userId", userId); // Guardar el userId obtenido del endpoint
+        localStorage.setItem("userId", userId);
       }
 
       // Redirigir a la página de contactos
@@ -118,7 +108,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  localStorage.setItem("email", e.target.value); // Guardar en localStorage
+                  localStorage.setItem("email", e.target.value);
                 }}
                 required
               />
@@ -135,7 +125,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  localStorage.setItem("password", e.target.value); // Guardar en localStorage
+                  localStorage.setItem("password", e.target.value);
                 }}
                 required
               />

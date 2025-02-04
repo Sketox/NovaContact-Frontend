@@ -1,17 +1,7 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import axios from "axios";
+import "../../utils/globals";
+import api from "../../utils/api"; // Importar configuración de Axios
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
-// Configurar Axios con ngrok y CORS
-const instance = axios.create({
-  baseURL: "https://7dc3-186-70-178-190.ngrok-free.app", // Cambia esto por tu URL de backend
-  withCredentials: true,
-  headers: {
-    "ngrok-skip-browser-warning": "true",
-  },
-});
 
 export default function EditContact() {
   const router = useRouter();
@@ -31,7 +21,7 @@ export default function EditContact() {
         }
 
         // Llamar al endpoint para obtener el contacto por ID
-        const response = await instance.get(`/tutorial/getContactById/${id}`);
+        const response = await api.get(`/tutorial/getContactById/${id}`);
         if (response.data.message) {
           console.error(response.data.message);
         } else {
@@ -49,7 +39,7 @@ export default function EditContact() {
     e.preventDefault();
     try {
       // Llamar al endpoint para editar el contacto
-      await instance.put(`/tutorial/editContact/${id}`, contact);
+      await api.put(`/tutorial/editContact/${id}`, contact);
       router.push("/contacts"); // Redirigir después de editar
     } catch (error) {
       console.error("Error al editar el contacto:", error);
@@ -67,7 +57,7 @@ export default function EditContact() {
   // Función para manejar la eliminación del contacto
   const handleDelete = async () => {
     try {
-      await instance.delete(`/tutorial/deleteContact/${id}`);
+      await api.delete(`/tutorial/deleteContact/${id}`);
       router.push("/contacts"); // Redirigir a la lista de contactos después de la eliminación
     } catch (error) {
       console.error("Error al eliminar el contacto:", error);
