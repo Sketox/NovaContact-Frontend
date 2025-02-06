@@ -88,20 +88,19 @@ export default function ContactsPage() {
               className="d-inline-block align-text-center"
             />
           </a>
-          <button
-            className="btn btn-outline-danger"
-            onClick={handleLogout}
-            disabled={loadingLogout}
-          >
-            {loadingLogout ? (
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" />{" "}
-                Cerrando Sesión...
-              </>
-            ) : (
-              "Cerrar Sesión"
-            )}
-          </button>
+
+          <form className="d-flex my-2 my-lg-0">
+            <input
+              className="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              style={{ color: "black", borderColor: "black" }}
+            />
+            <button className="btn btn-outline-dark my-2 my-sm-0" type="submit">
+              Search
+            </button>
+          </form>
         </div>
       </nav>
 
@@ -117,6 +116,20 @@ export default function ContactsPage() {
               className="d-inline-block align-text-center m-2"
             />
           </div>
+          <button
+            className="btn btn-danger"
+            onClick={handleLogout}
+            disabled={loadingLogout}
+          >
+            {loadingLogout ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" />{" "}
+                Cerrando Sesión...
+              </>
+            ) : (
+              "Cerrar Sesión"
+            )}
+          </button>
         </h1>
 
         <div className="mt-5">
