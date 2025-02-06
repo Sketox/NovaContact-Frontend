@@ -1,11 +1,17 @@
 import "../utils/globals";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import api from "../utils/api"; // Importar configuración de Axios
+import { Spinner } from "react-bootstrap"; // Importar Spinner de Bootstrap
 
 export default function Register() {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Estado de carga
   const router = useRouter(); // Hook de Next.js para manejar la navegación
 
   const handleSubmit = async (e) => {
+    setLoading(true); // Activar el indicador de carga
+    setError(""); // Limpiar errores anteriores
     e.preventDefault();
 
     // Obtener los valores del formulario
@@ -35,6 +41,8 @@ export default function Register() {
     } catch (error) {
       console.error("Error during registration:", error);
       alert("Hubo un error al registrarse, por favor intente de nuevo.");
+    } finally {
+      setLoading(false); // Desactivar el indicador de carga
     }
   };
 
@@ -62,7 +70,7 @@ export default function Register() {
           <div className="col-md-6">
             <div className="card shadow p-4">
               <h1 className="text-center mb-4">
-                Register
+                Registro
                 <img
                   src="/Satellite.png"
                   alt="Satellite Icon"
@@ -75,39 +83,39 @@ export default function Register() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label">
-                    Username
+                    Usuario
                   </label>
                   <input
                     type="text"
                     className="form-control"
                     id="username"
-                    placeholder="Enter your username"
+                    placeholder="Ingresa tu nombre de usuario"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="password" className="form-label">
-                    Password
+                    Contraseña
                   </label>
                   <input
                     type="password"
                     className="form-control"
                     id="password"
-                    placeholder="Enter your password"
+                    placeholder="Ingresa tu contraseña"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    Email
+                    Correo electrónico
                   </label>
                   <input
                     type="email"
                     className="form-control"
                     id="email"
-                    placeholder="Enter your email"
+                    placeholder="Ingresa tu correo electrónico"
                     required
                   />
                 </div>
@@ -120,17 +128,33 @@ export default function Register() {
                     required
                   />
                   <label className="form-check-label" htmlFor="terms">
-                    I accept the terms
+                    Acepto los términos y condiciones
                   </label>
                   <div>
                     <a href="#" className="text-dark">
-                      Read our T&Cs
+                      Leer términos y condiciones
                     </a>
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-dark w-100">
-                  Registrarse
+                <button
+                  type="submit"
+                  className="btn btn-dark w-100"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                      />{" "}
+                      Registering...
+                    </>
+                  ) : (
+                    "Register"
+                  )}
                 </button>
               </form>
             </div>

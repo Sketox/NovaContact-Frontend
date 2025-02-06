@@ -1,8 +1,17 @@
 import "../utils/globals";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import api from "../utils/api"; // Importar configuración de Axios
+import { Spinner } from "react-bootstrap"; // Importar Spinner de Bootstrap
 
 export default function AddContact() {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Estado de carga
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
+    setLoading(true); // Activar el indicador de carga
+    setError(""); // Limpiar errores anteriores
     e.preventDefault();
 
     // Obtener los valores del formulario
@@ -63,8 +72,15 @@ export default function AddContact() {
               className="d-inline-block align-text-center"
             />
           </a>
-          <a href="/contacts" className="btn btn-dark me-4">
-            Contacts
+          <a href="/contacts" className="btn btn-dark me-4" disabled={loading}>
+            {loading ? (
+              <>
+                <Spinner as="span" animation="border" size="sm" role="status" />{" "}
+                Cargando...
+              </>
+            ) : (
+              "Contactos"
+            )}
           </a>
         </div>
       </nav>
@@ -75,7 +91,7 @@ export default function AddContact() {
           <div className="col-md-6">
             <div className="card shadow p-4">
               <h1 className="text-center mb-4">
-                Add Contact
+                Agregar Contactos
                 <img
                   src="/Spacegun.png"
                   alt="Spacegun Icon"
@@ -95,56 +111,72 @@ export default function AddContact() {
 
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
-                    Name
+                    Nombre
                   </label>
                   <input
                     type="text"
                     className="form-control"
                     id="name"
-                    placeholder="Enter contact name"
+                    placeholder="Ingresa el nombre"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="number" className="form-label">
-                    Number
+                    Número
                   </label>
                   <input
                     type="tel"
                     className="form-control"
                     id="number"
-                    placeholder="Enter phone number"
+                    placeholder="Ingresa el número"
                     required
                   />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
-                    Email
+                    Correo electrónico
                   </label>
                   <input
                     type="email"
                     className="form-control"
                     id="email"
-                    placeholder="Enter email"
+                    placeholder="Ingresa el correo electrónico"
                   />
                 </div>
 
                 <div className="mb-3">
                   <label htmlFor="notes" className="form-label">
-                    Notes
+                    Notas
                   </label>
                   <textarea
                     className="form-control"
                     id="notes"
                     rows="3"
-                    placeholder="Additional notes"
+                    placeholder="Ingresa notas adicionales"
                   ></textarea>
                 </div>
 
-                <button type="submit" className="btn btn-dark w-100">
-                  Add Contact
+                <button
+                  type="submit"
+                  className="btn btn-dark w-100"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                      />{" "}
+                      Cargando...
+                    </>
+                  ) : (
+                    "Agregar contacto"
+                  )}
                 </button>
               </form>
             </div>

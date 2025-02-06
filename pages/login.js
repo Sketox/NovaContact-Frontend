@@ -2,49 +2,44 @@ import "../utils/globals";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import api from "../utils/api"; // Importar configuración de Axios
+import { Spinner } from "react-bootstrap"; // Importar Spinner de Bootstrap
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Estado de carga
   const router = useRouter();
 
-  // Verificar si el usuario ya está autenticado al cargar la página
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       localStorage.getItem("isAuthenticated")
     ) {
-      router.push("/contacts"); // Redirigir a la página de contactos
+      router.push("/contacts");
     }
 
-    // Cargar email y password del localStorage si existen
     if (typeof window !== "undefined") {
       const storedEmail = localStorage.getItem("email");
       const storedPassword = localStorage.getItem("password");
 
-      if (storedEmail) {
-        setEmail(storedEmail);
-      }
-      if (storedPassword) {
-        setPassword(storedPassword);
-      }
+      if (storedEmail) setEmail(storedEmail);
+      if (storedPassword) setPassword(storedPassword);
     }
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true); // Activar el indicador de carga
+    setError(""); // Limpiar errores anteriores
+
     try {
-      // Realizar solicitud de autenticación con API
       const response = await api.post("/user/authenticate", {
         email,
         password,
       });
-
-      console.log("Response from API:", response.data);
       const userId = response.data.userId;
 
-      // Guardar datos en localStorage
       if (typeof window !== "undefined") {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("email", email);
@@ -52,11 +47,12 @@ export default function Login() {
         localStorage.setItem("userId", userId);
       }
 
-      // Redirigir a la página de contactos
       router.push("/contacts");
     } catch (err) {
       console.error("Error during login:", err.response?.data || err.message);
       setError("Invalid email or password");
+    } finally {
+      setLoading(false); // Desactivar el indicador de carga
     }
   };
 
@@ -81,7 +77,7 @@ export default function Login() {
       {/* Título */}
       <div className="container mt-4 text-center">
         <h1 className="text-dark m-5">
-          Login
+          Iniciar sesión
           <img
             width="50"
             height="50"
@@ -98,13 +94,13 @@ export default function Login() {
           <form id="login-form" onSubmit={handleLogin}>
             <div className="form-group mb-3">
               <label htmlFor="email" className="form-label">
-                Email
+                Correo electrónico
               </label>
               <input
                 type="email"
                 className="form-control"
                 id="email"
-                placeholder="Enter your email"
+                placeholder="Ingresa tu correo electrónico"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -115,13 +111,13 @@ export default function Login() {
             </div>
             <div className="form-group mb-3">
               <label htmlFor="password" className="form-label">
-                Password
+                Contraseña
               </label>
               <input
                 type="password"
                 className="form-control"
                 id="password"
-                placeholder="Enter your password"
+                placeholder="Ingresa tu contraseña"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -131,12 +127,30 @@ export default function Login() {
               />
             </div>
             {error && <p className="text-danger text-center">{error}</p>}
-            <button type="submit" className="btn btn-dark w-100">
-              Sign in
+
+            <button
+              type="submit"
+              className="btn btn-dark w-100"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                  />{" "}
+                  Iniciando sesión...
+                </>
+              ) : (
+                "Iniciar sesión"
+              )}
             </button>
+
             <div className="text-start mt-3">
               <a href="/register" className="text-dark">
-                Don't have an account? Sign up
+                ¿Eres nuevo? Crea una cuenta
               </a>
             </div>
           </form>
