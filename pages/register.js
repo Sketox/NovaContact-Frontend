@@ -1,4 +1,5 @@
 import "../utils/globals";
+import Footer from "../components/footer";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import api from "../utils/api"; // Importar configuración de Axios
@@ -161,6 +162,7 @@ export default function Register() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

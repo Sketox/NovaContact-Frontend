@@ -1,48 +1,37 @@
 import "../utils/globals";
+import Footer from "../components/footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import api from "../utils/api"; // Importar configuración de Axios
-import { Spinner } from "react-bootstrap"; // Importar Spinner de Bootstrap
+import api from "../utils/api";
+import { Spinner } from "react-bootstrap";
 
 export default function ContactsPage() {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [loadingLogout, setLoadingLogout] = useState(false); // Estado de carga para logout
-  const [loadingAdd, setLoadingAdd] = useState(false); // Estado de carga para agregar contacto
-  const [editing, setEditing] = useState({}); // Estado de carga por contacto
+  const [loading, setLoading] = useState(true); // Estado de carga para contactos
+  const [loadingLogout, setLoadingLogout] = useState(false);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [editing, setEditing] = useState({});
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
     const fetchContacts = async () => {
       const userId = localStorage.getItem("userId");
-      console.log("User ID:", userId); // Verificar que se obtiene el userId
-
       if (!userId) {
-        router.push("/login"); // Si no hay userId, redirigir al login
+        router.push("/login");
         return;
       }
-
       try {
         const response = await api.get(`/tutorial/getContact/${userId}`);
-        console.log("Response from API:", response);
-        console.log("Response Data:", response.data);
-
-        // Validar que la respuesta sea un array antes de procesarla
-        if (!response.data || typeof response.data !== "object") {
-          setContacts([]);
-          return;
-        }
-
-        // Convertir el objeto en un array y filtrar contactos vacíos
-        const contactArray = Object.values(response.data).filter(
+        const contactArray = Object.values(response.data || {}).filter(
           (contact) => contact && contact.name
         );
-
-        // Establecer el estado con contactos válidos
         setContacts(contactArray);
       } catch (error) {
         console.error("Error fetching contacts:", error);
-        setContacts([]); // En caso de error, asegurar que la lista esté vacía
+        setContacts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -50,22 +39,20 @@ export default function ContactsPage() {
   }, [router]);
 
   const handleLogout = async () => {
-    setLoadingLogout(true); // Activar el indicador de carga
-    setError(""); // Limpiar errores anteriores
-
+    setLoadingLogout(true);
+    setError("");
     if (typeof window !== "undefined") {
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("email");
       localStorage.removeItem("password");
       localStorage.removeItem("userId");
     }
-
     router.push("/login");
   };
 
   const handleAddContact = () => {
-    setLoadingAdd(true); // Activar el indicador de carga
-    setError(""); // Limpiar errores anteriores
+    setLoadingAdd(true);
+    setError("");
     router.push("/addcontact");
   };
 
@@ -88,7 +75,6 @@ export default function ContactsPage() {
               className="d-inline-block align-text-center"
             />
           </a>
-
           <form className="d-flex my-2 my-lg-0">
             <input
               className="form-control me-2"
@@ -131,9 +117,12 @@ export default function ContactsPage() {
             )}
           </button>
         </h1>
-
         <div className="mt-5">
-          {contacts.length > 0 ? (
+          {loading ? (
+            <div className="d-flex justify-content-center align-items-center vh-50">
+              <Spinner animation="border" variant="dark" />
+            </div>
+          ) : contacts.length > 0 ? (
             contacts.map((contact) => (
               <div className="card mb-3" key={contact.userId}>
                 <div className="row g-0 d-flex align-items-center">
@@ -157,12 +146,7 @@ export default function ContactsPage() {
                         disabled={editing[contact.id]}
                       >
                         {editing[contact.id] ? (
-                          <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                          />
+                          <Spinner animation="border" size="sm" />
                         ) : (
                           "Editar"
                         )}
@@ -173,7 +157,9 @@ export default function ContactsPage() {
               </div>
             ))
           ) : (
-            <p>No se encontraron contactos</p>
+            <div className="text-center text-muted">
+              No hay contactos registrados
+            </div>
           )}
         </div>
 
@@ -184,15 +170,13 @@ export default function ContactsPage() {
           disabled={loadingAdd}
         >
           {loadingAdd ? (
-            <>
-              <Spinner as="span" animation="border" size="sm" role="status" />{" "}
-              Cargando...
-            </>
+            <Spinner animation="border" size="sm" />
           ) : (
             "Agregar Contacto"
           )}
         </button>
       </div>
+      <Footer />
     </div>
   );
 }

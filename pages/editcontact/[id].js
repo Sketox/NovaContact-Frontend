@@ -1,4 +1,5 @@
 import "../../utils/globals";
+import Footer from "../../components/footer";
 import api from "../../utils/api"; // Importar configuración de Axios
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -54,7 +55,7 @@ export default function EditContact() {
       return;
     }
 
-    if (email && !validateEmail(contact.email)) {
+    if (contact.email && !validateEmail(contact.email)) {
       setError("Ingrese un correo electrónico válido.");
       setLoading(false);
       return;
@@ -91,7 +92,15 @@ export default function EditContact() {
     router.push("/contacts");
   };
 
-  if (!contact) return <p>Loading...</p>;
+  if (!contact) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-dark" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="vh-100 d-flex flex-column">
@@ -115,7 +124,7 @@ export default function EditContact() {
             {loadingContact ? (
               <>
                 <Spinner as="span" animation="border" size="sm" role="status" />{" "}
-                Cargand...
+                Cargando...
               </>
             ) : (
               "Contactos"
@@ -226,6 +235,7 @@ export default function EditContact() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
