@@ -1,4 +1,5 @@
 import "../../utils/globals";
+import Header from "../../components/header";
 import Footer from "../../components/footer";
 import api from "../../utils/api"; // Importar configuración de Axios
 import { useEffect, useState } from "react";
@@ -103,139 +104,147 @@ export default function EditContact() {
   }
 
   return (
-    <div className="vh-100 d-flex flex-column">
-      <nav className="navbar navbar-light bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            <span className="ms-4 me-2">NovaContact</span>
-            <img
-              src="/NovaContactLogo.svg"
-              alt="NovaContact Logo"
-              width="30"
-              height="30"
-              className="d-inline-block align-text-center"
-            />
-          </a>
-          <button
-            onClick={handleLoadingContacts}
-            className="btn btn-dark me-4"
-            disabled={loadingContact}
-          >
-            {loadingContact ? (
-              <>
-                <Spinner as="span" animation="border" size="sm" role="status" />{" "}
-                Cargando...
-              </>
-            ) : (
-              "Contactos"
-            )}
-          </button>
-        </div>
-      </nav>
-      <div className="container mt-4">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="card shadow p-4">
-              <h1 className="text-center mb-4">
-                Editar Contacto
-                <img
-                  src="/Moonrover.png"
-                  alt="Moonrover Icon"
-                  width="50"
-                  height="50"
-                  className="d-inline-block align-text-center m-2"
-                />
-              </h1>
-              {/* Área de imagen */}
-              <div className="text-center mb-4">
-                <div className="border rounded p-4 d-inline-block">
-                  <i className="bi bi-image fs-1"></i>
-                </div>
-              </div>
-              {error && <div className="alert alert-danger">{error}</div>}
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">
-                    Nombre
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    name="name"
-                    required
-                    value={contact.name}
-                    onChange={handleChange}
+    <>
+      <Header />
+      <div className="vh-100 d-flex flex-column">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <div className="container-fluid">
+            <a className="navbar-brand" href="/id">
+              <span className="ms-4 me-2">NovaContact</span>
+              <img
+                src="/NovaContactLogo.svg"
+                alt="NovaContact Logo"
+                width="30"
+                height="30"
+                className="d-inline-block align-text-center"
+              />
+            </a>
+            <button
+              onClick={handleLoadingContacts}
+              className="btn btn-dark me-4"
+              disabled={loadingContact}
+            >
+              {loadingContact ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                  />{" "}
+                  Cargando...
+                </>
+              ) : (
+                "Contactos"
+              )}
+            </button>
+          </div>
+        </nav>
+        <div className="container mt-4">
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <div className="card shadow p-4">
+                <h1 className="text-center mb-4">
+                  Editar Contacto
+                  <img
+                    src="/Moonrover.png"
+                    alt="Moonrover Icon"
+                    width="50"
+                    height="50"
+                    className="d-inline-block align-text-center m-2"
                   />
+                </h1>
+                {/* Área de imagen */}
+                <div className="text-center mb-4">
+                  <div className="border rounded p-4 d-inline-block">
+                    <i className="bi bi-image fs-1"></i>
+                  </div>
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="number" className="form-label">
-                    Número
-                  </label>
-                  <input
-                    type="tel"
-                    className="form-control"
-                    id="number"
-                    name="number"
-                    required
-                    value={contact.number}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Correo electrónico
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    value={contact.email}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="notes" className="form-label">
-                    Notas adicionales
-                  </label>
-                  <textarea
-                    className="form-control"
-                    id="notes"
-                    rows="3"
-                    name="notes"
-                    value={contact.notes || ""}
-                    onChange={handleChange}
-                  ></textarea>
-                </div>
+                {error && <div className="alert alert-danger">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="name" className="form-label">
+                      Nombre
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      name="name"
+                      required
+                      value={contact.name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="number" className="form-label">
+                      Número
+                    </label>
+                    <input
+                      type="tel"
+                      className="form-control"
+                      id="number"
+                      name="number"
+                      required
+                      value={contact.number}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Correo electrónico
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      name="email"
+                      value={contact.email}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="notes" className="form-label">
+                      Notas adicionales
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="notes"
+                      rows="3"
+                      name="notes"
+                      value={contact.notes || ""}
+                      onChange={handleChange}
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-dark w-100"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Spinner as="span" animation="border" size="sm" />
+                    ) : (
+                      "Guardar Cambios"
+                    )}
+                  </button>
+                </form>
                 <button
-                  type="submit"
-                  className="btn btn-dark w-100"
-                  disabled={loading}
+                  className="btn btn-danger w-100 mt-3"
+                  onClick={handleDelete}
+                  disabled={deleting}
                 >
-                  {loading ? (
+                  {deleting ? (
                     <Spinner as="span" animation="border" size="sm" />
                   ) : (
-                    "Guardar Cambios"
+                    "Eliminar Contacto"
                   )}
                 </button>
-              </form>
-              <button
-                className="btn btn-danger w-100 mt-3"
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? (
-                  <Spinner as="span" animation="border" size="sm" />
-                ) : (
-                  "Eliminar Contacto"
-                )}
-              </button>
+              </div>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import "../utils/globals";
 import Footer from "../components/footer";
+import Header from "../components/header";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import api from "../utils/api";
@@ -69,9 +70,10 @@ export default function ContactsPage() {
 
   return (
     <div>
-      <nav className="navbar navbar-light bg-light">
+      <Header />
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="/id">
             <span className="ms-4 me-2">NovaContact</span>
             <img
               src="/NovaContactLogo.svg"

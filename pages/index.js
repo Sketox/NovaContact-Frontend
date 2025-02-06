@@ -1,4 +1,5 @@
 import "../utils/globals";
+import Header from "../components/header";
 import Footer from "../components/footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -6,6 +7,7 @@ import { useRouter } from "next/router";
 export default function Index() {
   return (
     <>
+      <Header />
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div className="container">

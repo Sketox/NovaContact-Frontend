@@ -1,98 +1,195 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import "../utils/globals";
+import Header from "../components/header";
+import Footer from "../components/footer";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
-export default function Contact() {
+export default function Index() {
   return (
-    <div className="vh-100 d-flex flex-column">
+    <>
+      <Header />
       {/* Navbar */}
-      <nav className="navbar navbar-light bg-light">
-        <div className="container-fluid">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="container">
           <a className="navbar-brand" href="#">
-            <span className="ms-4 me-2">NovaContact</span>
-            <img
-              src="/NovaContactLogo.svg"
-              alt="NovaContact Logo"
-              width="30"
-              height="30"
-              className="d-inline-block align-text-center"
-            />
+            NovaContact
           </a>
-          <a href="/contacts" className="btn btn-dark me-4">
-            Contacts
-          </a>
+          <img
+            src="/NovaContactLogo.svg"
+            alt="NovaContact Logo"
+            width="30"
+            height="30"
+            className="d-inline-block align-text-center"
+          />
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item">
+                <a className="nav-link" href="#objetivo">
+                  Objetivo
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#tecnologias">
+                  Tecnologías
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#contacto">
+                  Contacto
+                </a>
+              </li>
+            </ul>
+            <a className="btn btn-dark ms-3" href="/login">
+              Iniciar sesión
+            </a>
+          </div>
         </div>
       </nav>
 
-      {/* Título y detalles del contacto */}
-      <div className="container mt-4">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="card shadow p-4">
-              <h1 className="text-center mb-4">
-                Contact
-                <img
-                  src="/Spacefighter.png"
-                  alt="Spacefighter Icon"
-                  width="50"
-                  height="50"
-                  className="d-inline-block align-text-center m-2"
-                />
-              </h1>
+      {/* Hero Section */}
+      <header className="bg-light text-center py-5">
+        <div className="container">
+          <h1 className="display-4">
+            Bienvenido a NovaContact
+            <img
+              src="/NovaContactLogo.svg"
+              alt="NovaContact Logo"
+              width="40"
+              height="40"
+              className="d-inline-block align-text-center m-3"
+            />
+          </h1>
+          <p className="lead">
+            NovaContact es la herramienta perfecta para gestionar tus contactos.
+            En un mundo donde la información está en constante flujo, es
+            esencial contar con una plataforma eficiente y accesible. Nuestra
+            agenda te permite almacenar, editar y organizar la información de
+            tus contactos de manera rápida y sin complicaciones. Los usuarios
+            podrán añadir y actualizar fácilmente detalles como nombres,
+            direcciones de correo electrónico, números de teléfono, y mucho más.
+            Con una interfaz limpia y moderna, esta agenda web está diseñada
+            para simplificar tu vida diaria, brindándote acceso a tus contactos
+            cuando más lo necesites, sin importar el dispositivo.
+          </p>
+        </div>
+      </header>
 
-              {/* Área de imagen */}
-              <div className="text-center mb-4">
-                <div className="border rounded p-4 d-inline-block">
-                  <i className="bi bi-image fs-1"></i>
+      {/* Objetivo */}
+      <section id="objetivo" className="py-5 container">
+        <h2 className="text-center">¿Por qué fue creada esta agenda?</h2>
+        <p className="text-center">
+          Esta agenda digital fue desarrollada para ofrecer una forma sencilla y
+          rápida de administrar contactos, facilitando su organización y acceso.
+          En un mundo tan interconectado, tener todos tus contactos organizados
+          y a mano es más importante que nunca. NovaContact fue creada con el
+          objetivo de ayudar a las personas a gestionar sus relaciones, tanto
+          personales como profesionales, de manera eficiente. Al ofrecer una
+          plataforma intuitiva y segura, buscamos que todos los usuarios puedan
+          acceder a su información sin dificultad y con la certeza de que está
+          almacenada de manera segura.
+        </p>
+      </section>
+
+      {/* Tecnologías */}
+      <section id="tecnologias" className="bg-light py-5">
+        <div className="container text-center">
+          <h2>Tecnologías Utilizadas</h2>
+          <div
+            id="tecnologiasCarousel"
+            className="carousel slide mt-4"
+            data-bs-ride="carousel"
+          >
+            <div className="carousel-inner">
+              <div className="carousel-item active">
+                <img
+                  src="/next.svg"
+                  className="d-block w-100"
+                  alt="Bootstrap"
+                />
+                <div className="carousel-caption d-none d-md-block">
+                  <h4>Bootstrap</h4>
+                  <p>Framework CSS para diseño web responsivo.</p>
                 </div>
               </div>
-
-              <div className="mb-3">
-                <label className="form-label">Name</label>
-                <input
-                  type="text"
-                  className="form-control bg-light"
-                  value="Filled Value"
-                  readOnly
+              <div className="carousel-item">
+                <img
+                  src="/Firebase-logo.jpg"
+                  className="d-block w-100"
+                  alt="Firebase"
                 />
+                <div className="carousel-caption d-none d-md-block">
+                  <h4>Firebase</h4>
+                  <p>Base de datos en la nube y autenticación.</p>
+                </div>
               </div>
-
-              <div className="mb-3">
-                <label className="form-label">Number</label>
-                <input
-                  type="tel"
-                  className="form-control bg-light"
-                  value="Filled Value"
-                  readOnly
+              <div className="carousel-item">
+                <img
+                  src="/Nestjs-logo.jpg"
+                  className="d-block w-100"
+                  alt="NestJS"
                 />
+                <div className="carousel-caption d-none d-md-block">
+                  <h4>NestJS</h4>
+                  <p>Backend escalable con TypeScript.</p>
+                </div>
               </div>
-
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control bg-light"
-                  value="Filled Value"
-                  readOnly
+              <div className="carousel-item">
+                <img
+                  src="/Nestjs-logo1.jpg"
+                  className="d-block w-100"
+                  alt="NestJS"
                 />
+                <div className="carousel-caption d-none d-md-block">
+                  <h4>NestJS</h4>
+                  <p>Backend modular y eficiente.</p>
+                </div>
               </div>
-
-              <div className="mb-4">
-                <label className="form-label">Notes</label>
-                <textarea
-                  className="form-control bg-light"
-                  rows="3"
-                  value="Filled Value"
-                  readOnly
-                ></textarea>
-              </div>
-
-              <a href="/editcontact" className="btn btn-dark w-100">
-                Edit
-              </a>
             </div>
+            <button
+              className="carousel-control-prev"
+              type="button"
+              data-bs-target="#tecnologiasCarousel"
+              data-bs-slide="prev"
+            >
+              <span
+                className="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Previous</span>
+            </button>
+            <button
+              className="carousel-control-next"
+              type="button"
+              data-bs-target="#tecnologiasCarousel"
+              data-bs-slide="next"
+            >
+              <span
+                className="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Next</span>
+            </button>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Contacto */}
+      <section id="contacto" className="py-5 container text-center">
+        <h2>Contacto</h2>
+        <p>
+          Si tienes dudas o sugerencias, contáctanos en{" "}
+          <a href="mailto:soporte@agendaweb.com">soporte@novacontact.com</a>
+        </p>
+      </section>
+      <Footer />
+    </>
   );
 }

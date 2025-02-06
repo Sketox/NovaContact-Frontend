@@ -1,4 +1,5 @@
 import "../utils/globals";
+import Header from "../components/header";
 import Footer from "../components/footer";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -58,106 +59,109 @@ export default function Login() {
   };
 
   return (
-    <div className="vh-100 d-flex flex-column">
-      {/* Navbar */}
-      <nav className="navbar navbar-light bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            <span className="ms-4 me-2">NovaContact</span>
+    <>
+      <Header />
+      <div className="vh-100 d-flex flex-column">
+        {/* Navbar */}
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <div className="container-fluid">
+            <a className="navbar-brand" href="/id">
+              <span className="ms-4 me-2">NovaContact</span>
+              <img
+                src="/NovaContactLogo.svg"
+                alt="NovaContact Logo"
+                width="30"
+                height="30"
+                className="d-inline-block align-text-center"
+              />
+            </a>
+          </div>
+        </nav>
+
+        {/* Título */}
+        <div className="container mt-4 text-center">
+          <h1 className="text-dark m-5">
+            Iniciar sesión
             <img
-              src="/NovaContactLogo.svg"
-              alt="NovaContact Logo"
-              width="30"
-              height="30"
-              className="d-inline-block align-text-center"
+              width="50"
+              height="50"
+              src="https://img.icons8.com/ios-filled/50/space-shuttle.png"
+              alt="space-shuttle"
+              className="m-2"
             />
-          </a>
+          </h1>
         </div>
-      </nav>
 
-      {/* Título */}
-      <div className="container mt-4 text-center">
-        <h1 className="text-dark m-5">
-          Iniciar sesión
-          <img
-            width="50"
-            height="50"
-            src="https://img.icons8.com/ios-filled/50/space-shuttle.png"
-            alt="space-shuttle"
-            className="m-2"
-          />
-        </h1>
-      </div>
+        {/* Login Form */}
+        <div className="container d-flex justify-content-center align-items-center">
+          <div className="card p-4 shadow" style={{ width: "22rem" }}>
+            <form id="login-form" onSubmit={handleLogin}>
+              <div className="form-group mb-3">
+                <label htmlFor="email" className="form-label">
+                  Correo electrónico
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  placeholder="Ingresa tu correo electrónico"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    localStorage.setItem("email", e.target.value);
+                  }}
+                  required
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="password" className="form-label">
+                  Contraseña
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  placeholder="Ingresa tu contraseña"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    localStorage.setItem("password", e.target.value);
+                  }}
+                  required
+                />
+              </div>
+              {error && <p className="text-danger text-center">{error}</p>}
 
-      {/* Login Form */}
-      <div className="container d-flex justify-content-center align-items-center">
-        <div className="card p-4 shadow" style={{ width: "22rem" }}>
-          <form id="login-form" onSubmit={handleLogin}>
-            <div className="form-group mb-3">
-              <label htmlFor="email" className="form-label">
-                Correo electrónico
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                placeholder="Ingresa tu correo electrónico"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  localStorage.setItem("email", e.target.value);
-                }}
-                required
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label htmlFor="password" className="form-label">
-                Contraseña
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                placeholder="Ingresa tu contraseña"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  localStorage.setItem("password", e.target.value);
-                }}
-                required
-              />
-            </div>
-            {error && <p className="text-danger text-center">{error}</p>}
+              <button
+                type="submit"
+                className="btn btn-dark w-100"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                    />{" "}
+                    Iniciando sesión...
+                  </>
+                ) : (
+                  "Iniciar sesión"
+                )}
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-dark w-100"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                  />{" "}
-                  Iniciando sesión...
-                </>
-              ) : (
-                "Iniciar sesión"
-              )}
-            </button>
-
-            <div className="text-start mt-3">
-              <a href="/register" className="text-dark">
-                ¿Eres nuevo? Crea una cuenta
-              </a>
-            </div>
-          </form>
+              <div className="text-start mt-3">
+                <a href="/register" className="text-dark">
+                  ¿Eres nuevo? Crea una cuenta
+                </a>
+              </div>
+            </form>
+          </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import "../utils/globals";
+import Header from "../components/header";
 import Footer from "../components/footer";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -48,121 +49,124 @@ export default function Register() {
   };
 
   return (
-    <div className="vh-100 d-flex flex-column">
-      {/* Navbar */}
-      <nav className="navbar navbar-light bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            <span className="ms-4 me-2">NovaContact</span>
-            <img
-              src="/NovaContactLogo.svg"
-              alt="NovaContact Logo"
-              width="30"
-              height="30"
-              className="d-inline-block align-text-center"
-            />
-          </a>
-        </div>
-      </nav>
+    <>
+      <div className="vh-100 d-flex flex-column">
+        {/* Navbar */}
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <div className="container-fluid">
+            <a className="navbar-brand" href="/id">
+              <span className="ms-4 me-2">NovaContact</span>
+              <img
+                src="/NovaContactLogo.svg"
+                alt="NovaContact Logo"
+                width="30"
+                height="30"
+                className="d-inline-block align-text-center"
+              />
+            </a>
+          </div>
+        </nav>
 
-      {/* Título y formulario */}
-      <div className="container mt-4">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="card shadow p-4">
-              <h1 className="text-center mb-4">
-                Registro
-                <img
-                  src="/Satellite.png"
-                  alt="Satellite Icon"
-                  width="50"
-                  height="50"
-                  className="d-inline-block align-text-center m-2"
-                />
-              </h1>
-
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="username" className="form-label">
-                    Usuario
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="username"
-                    placeholder="Ingresa tu nombre de usuario"
-                    required
+        {/* Título y formulario */}
+        <div className="container mt-4">
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <div className="card shadow p-4">
+                <h1 className="text-center mb-4">
+                  Registro
+                  <img
+                    src="/Satellite.png"
+                    alt="Satellite Icon"
+                    width="50"
+                    height="50"
+                    className="d-inline-block align-text-center m-2"
                   />
-                </div>
+                </h1>
 
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    placeholder="Ingresa tu contraseña"
-                    required
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Correo electrónico
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    placeholder="Ingresa tu correo electrónico"
-                    required
-                  />
-                </div>
-
-                <div className="mb-3 form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="terms"
-                    required
-                  />
-                  <label className="form-check-label" htmlFor="terms">
-                    Acepto los términos y condiciones
-                  </label>
-                  <div>
-                    <a href="#" className="text-dark">
-                      Leer términos y condiciones
-                    </a>
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="username" className="form-label">
+                      Usuario
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="username"
+                      placeholder="Ingresa tu nombre de usuario"
+                      required
+                    />
                   </div>
-                </div>
 
-                <button
-                  type="submit"
-                  className="btn btn-dark w-100"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                      />{" "}
-                      Registering...
-                    </>
-                  ) : (
-                    "Register"
-                  )}
-                </button>
-              </form>
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Contraseña
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      placeholder="Ingresa tu contraseña"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Correo electrónico
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      placeholder="Ingresa tu correo electrónico"
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-3 form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="terms"
+                      required
+                    />
+                    <label className="form-check-label" htmlFor="terms">
+                      Acepto los términos y condiciones
+                    </label>
+                    <div>
+                      <a href="#" className="text-dark">
+                        Leer términos y condiciones
+                      </a>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn btn-dark w-100"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                        />{" "}
+                        Registering...
+                      </>
+                    ) : (
+                      "Register"
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+      <Header />
+    </>
   );
 }
