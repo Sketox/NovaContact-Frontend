@@ -8,11 +8,12 @@ import { Spinner } from "react-bootstrap";
 export default function ContactsPage() {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true); // Estado de carga para contactos
+  const [loading, setLoading] = useState(true);
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [loadingAdd, setLoadingAdd] = useState(false);
   const [editing, setEditing] = useState({});
   const [contacts, setContacts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // Estado para la búsqueda
 
   useEffect(() => {
     const fetchContacts = async () => {
@@ -61,6 +62,11 @@ export default function ContactsPage() {
     router.push(`/editcontact/${contactId}`);
   };
 
+  // Filtrar contactos en base a la búsqueda
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <nav className="navbar navbar-light bg-light">
@@ -75,17 +81,19 @@ export default function ContactsPage() {
               className="d-inline-block align-text-center"
             />
           </a>
-          <form className="d-flex my-2 my-lg-0">
+          <form
+            className="d-flex my-2 my-lg-0"
+            onSubmit={(e) => e.preventDefault()} // Evita que la página se recargue
+          >
             <input
               className="form-control me-2"
               type="search"
-              placeholder="Search"
+              placeholder="Buscar por nombre"
               aria-label="Search"
               style={{ color: "black", borderColor: "black" }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn btn-outline-dark my-2 my-sm-0" type="submit">
-              Search
-            </button>
           </form>
         </div>
       </nav>
@@ -122,8 +130,8 @@ export default function ContactsPage() {
             <div className="d-flex justify-content-center align-items-center vh-50">
               <Spinner animation="border" variant="dark" />
             </div>
-          ) : contacts.length > 0 ? (
-            contacts.map((contact) => (
+          ) : filteredContacts.length > 0 ? (
+            filteredContacts.map((contact) => (
               <div className="card mb-3" key={contact.userId}>
                 <div className="row g-0 d-flex align-items-center">
                   <div className="col-md-3 p-0">
@@ -158,7 +166,7 @@ export default function ContactsPage() {
             ))
           ) : (
             <div className="text-center text-muted">
-              No hay contactos registrados
+              No se encontraron contactos con ese nombre
             </div>
           )}
         </div>
