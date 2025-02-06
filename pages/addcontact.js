@@ -9,22 +9,51 @@ export default function AddContact() {
   const [loading, setLoading] = useState(false); // Estado de carga
   const router = useRouter();
 
+  const validateName = (name) => {
+    return /^[A-Za-z]+$/.test(name);
+  };
+
+  const validateNumber = (number) => {
+    return /^\d{10,13}$/.test(number);
+  };
+
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleSubmit = async (e) => {
     setLoading(true); // Activar el indicador de carga
     setError(""); // Limpiar errores anteriores
     e.preventDefault();
 
     // Obtener los valores del formulario
-    const name = e.target.name.value;
-    const number = e.target.number.value;
-    const email = e.target.email.value;
+    const name = e.target.name.value.trim();
+    const number = e.target.number.value.trim();
+    const email = e.target.email.value.trim();
     const notes = e.target.notes.value;
+
+    // Validaciones
+    if (!validateName(name)) {
+      setError("El nombre solo puede contener letras sin espacios.");
+      setLoading(false);
+      return;
+    }
+
+    if (!validateNumber(number)) {
+      setError("El número solo debe contener entre 10 a 13 dígitos.");
+      setLoading(false);
+      return;
+    }
+
+    if (email && !validateEmail(email)) {
+      setError("Ingrese un correo electrónico válido.");
+      setLoading(false);
+      return;
+    }
 
     // Obtener el userId desde localStorage
     const userId =
       typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
-    console.log("User ID retrieved from localStorage:", userId);
 
     if (!userId) {
       alert(
@@ -45,16 +74,13 @@ export default function AddContact() {
     try {
       // Enviar los datos al servidor usando Axios
       const response = await api.post("/tutorial/createData", contactData);
-
-      console.log("Response from server:", response.data);
       alert("¡Contacto añadido exitosamente!");
-
-      // Redirigir a la página de contactos después de añadir el contacto
       window.location.href = "/contacts";
     } catch (error) {
       console.error("Error adding contact:", error);
       alert("Hubo un error al añadir el contacto, por favor intente de nuevo.");
     }
+    setLoading(false);
   };
 
   return (
@@ -91,7 +117,7 @@ export default function AddContact() {
           <div className="col-md-6">
             <div className="card shadow p-4">
               <h1 className="text-center mb-4">
-                Agregar Contactos
+                Agregar contactos
                 <img
                   src="/Spacegun.png"
                   alt="Spacegun Icon"
@@ -100,15 +126,14 @@ export default function AddContact() {
                   className="d-inline-block align-text-center m-2"
                 />
               </h1>
-
-              <form onSubmit={handleSubmit}>
-                {/* Área de imagen */}
-                <div className="text-center mb-4">
-                  <div className="border rounded p-4 d-inline-block">
-                    <i className="bi bi-image fs-1"></i>
-                  </div>
+              {/* Área de imagen */}
+              <div className="text-center mb-4">
+                <div className="border rounded p-4 d-inline-block">
+                  <i className="bi bi-image fs-1"></i>
                 </div>
-
+              </div>
+              {error && <div className="alert alert-danger">{error}</div>}
+              <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
                     Nombre
@@ -117,11 +142,9 @@ export default function AddContact() {
                     type="text"
                     className="form-control"
                     id="name"
-                    placeholder="Ingresa el nombre"
                     required
                   />
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="number" className="form-label">
                     Número
@@ -130,23 +153,15 @@ export default function AddContact() {
                     type="tel"
                     className="form-control"
                     id="number"
-                    placeholder="Ingresa el número"
                     required
                   />
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
                     Correo electrónico
                   </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    placeholder="Ingresa el correo electrónico"
-                  />
+                  <input type="email" className="form-control" id="email" />
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="notes" className="form-label">
                     Notas
@@ -155,25 +170,20 @@ export default function AddContact() {
                     className="form-control"
                     id="notes"
                     rows="3"
-                    placeholder="Ingresa notas adicionales"
                   ></textarea>
                 </div>
-
                 <button
                   type="submit"
                   className="btn btn-dark w-100"
                   disabled={loading}
                 >
                   {loading ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                      />{" "}
-                      Cargando...
-                    </>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                    />
                   ) : (
                     "Agregar contacto"
                   )}

@@ -33,9 +33,33 @@ export default function EditContact() {
     fetchContactData();
   }, [id, router]);
 
+  const validateName = (name) => /^[A-Za-z]+$/.test(name);
+  const validateNumber = (number) => /^[0-9]{10,13}$/.test(number);
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Validaciones
+    if (!validateName(contact.name)) {
+      setError("El nombre solo puede contener letras sin espacios.");
+      setLoading(false);
+      return;
+    }
+
+    if (!validateNumber(contact.number)) {
+      setError("El número solo debe contener entre 10 a 13 dígitos.");
+      setLoading(false);
+      return;
+    }
+
+    if (email && !validateEmail(contact.email)) {
+      setError("Ingrese un correo electrónico válido.");
+      setLoading(false);
+      return;
+    }
+
     try {
       await api.put(`/tutorial/editContact/${id}`, contact);
       router.push("/contacts");
@@ -103,7 +127,23 @@ export default function EditContact() {
         <div className="row justify-content-center">
           <div className="col-md-6">
             <div className="card shadow p-4">
-              <h1 className="text-center mb-4">Editar Contacto</h1>
+              <h1 className="text-center mb-4">
+                Editar Contacto
+                <img
+                  src="/Moonrover.png"
+                  alt="Moonrover Icon"
+                  width="50"
+                  height="50"
+                  className="d-inline-block align-text-center m-2"
+                />
+              </h1>
+              {/* Área de imagen */}
+              <div className="text-center mb-4">
+                <div className="border rounded p-4 d-inline-block">
+                  <i className="bi bi-image fs-1"></i>
+                </div>
+              </div>
+              {error && <div className="alert alert-danger">{error}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
