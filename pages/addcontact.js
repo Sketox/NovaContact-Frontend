@@ -8,33 +8,35 @@ import { Spinner } from "react-bootstrap"; // Importar Spinner de Bootstrap
 
 export default function AddContact() {
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Estado de carga
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const router = useRouter();
 
-  const validateName = (name) => {
-    return /^[A-Za-z]+$/.test(name);
-  };
+  const validateName = (name) => /^[A-Za-z]+$/.test(name);
+  const validateNumber = (number) => /^\d{10,13}$/.test(number);
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const validateNumber = (number) => {
-    return /^\d{10,13}$/.test(number);
-  };
-
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setError("Solo se permiten imágenes.");
+    }
   };
 
   const handleSubmit = async (e) => {
-    setLoading(true); // Activar el indicador de carga
-    setError(""); // Limpiar errores anteriores
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    // Obtener los valores del formulario
     const name = e.target.name.value.trim();
     const number = e.target.number.value.trim();
     const email = e.target.email.value.trim();
     const notes = e.target.notes.value;
 
-    // Validaciones
     if (!validateName(name)) {
       setError("El nombre solo puede contener letras sin espacios.");
       setLoading(false);
@@ -53,10 +55,8 @@ export default function AddContact() {
       return;
     }
 
-    // Obtener el userId desde localStorage
     const userId =
       typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
     if (!userId) {
       alert(
         "No se encontró el ID de usuario. Por favor, inicie sesión nuevamente."
@@ -64,23 +64,34 @@ export default function AddContact() {
       return;
     }
 
-    // Crear un objeto con los datos del formulario
-    const contactData = {
-      userId, // Incluimos el ID del usuario
-      name,
-      number,
-      email,
-      notes,
-    };
+    let imagePath = "";
+    if (image) {
+      const formData = new FormData();
+      formData.append("image", image);
+      try {
+        const response = await api.post("/uploadImage", formData);
+        imagePath = response.data.filePath;
+      } catch (error) {
+        setError("Error al subir la imagen.");
+        setLoading(false);
+        return;
+      }
+    }
 
     try {
-      // Enviar los datos al servidor usando Axios
-      const response = await api.post("/tutorial/createData", contactData);
+      const contactData = {
+        userId,
+        name,
+        number,
+        email,
+        notes,
+        image: imagePath,
+      };
+      await api.post("/tutorial/createData", contactData);
       alert("¡Contacto añadido exitosamente!");
       window.location.href = "/contacts";
     } catch (error) {
-      console.error("Error adding contact:", error);
-      alert("Hubo un error al añadir el contacto, por favor intente de nuevo.");
+      setError("Error al añadir el contacto.");
     }
     setLoading(false);
   };
@@ -143,6 +154,34 @@ export default function AddContact() {
                 <div className="text-center mb-4">
                   <div className="border rounded p-4 d-inline-block">
                     <i className="bi bi-image fs-1"></i>
+                    <div className="mb-3 text-center">
+                      <label className="form-label">Imagen de Contacto</label>
+                      <button
+                        type="button"
+                        className="btn btn-dark d-block mx-auto"
+                        onClick={() =>
+                          document.getElementById("imageInput").click()
+                        }
+                      >
+                        {preview ? (
+                          <img
+                            src={preview}
+                            alt="Preview"
+                            className="img-thumbnail"
+                            width="100"
+                          />
+                        ) : (
+                          "Seleccionar Imagen"
+                        )}
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="d-none"
+                        id="imageInput"
+                      />
+                    </div>
                   </div>
                 </div>
                 {error && <div className="alert alert-danger">{error}</div>}
