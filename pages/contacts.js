@@ -14,7 +14,7 @@ export default function ContactsPage() {
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [loadingAdd, setLoadingAdd] = useState(false);
   const [editing, setEditing] = useState({});
-  const [contacts, setContacts] = useState([]); // Asegurar que contacts es un array
+  const [contacts, setContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const contactsPerPage = 10;
@@ -32,7 +32,6 @@ export default function ContactsPage() {
     }
     try {
       const response = await api.get(`/tutorial/getContact/${userId}`);
-      console.log("Datos recibidos:", response.data); // Debug para ver qué se recibe
       setContacts(
         Array.isArray(response.data) ? response.data : [response.data]
       );
@@ -45,16 +44,36 @@ export default function ContactsPage() {
   };
 
   const handleSearch = async () => {
-    if (!searchTerm) return;
+    if (!searchTerm.trim()) {
+      fetchContacts();
+      return;
+    }
     setLoading(true);
     try {
       const response = await api.get(`/tutorial/searchContact/${searchTerm}`);
-      setContacts(
-        Array.isArray(response.data) ? response.data : [response.data]
-      );
+
+      // Validación para evitar contactos vacíos
+      if (
+        !response.data ||
+        (Array.isArray(response.data) && response.data.length === 0)
+      ) {
+        setContacts([]);
+      } else if (Array.isArray(response.data)) {
+        setContacts(response.data);
+        setError("");
+      } else if (
+        typeof response.data === "object" &&
+        Object.keys(response.data).length > 0
+      ) {
+        setContacts([response.data]); // Si es un solo objeto válido, lo convertimos en array
+        setError("");
+      } else {
+        setContacts([]);
+      }
     } catch (error) {
       console.error("Error searching contacts:", error);
       setContacts([]);
+      setError("No existen contactos con ese nombre");
     } finally {
       setLoading(false);
     }
@@ -119,6 +138,9 @@ export default function ContactsPage() {
 
       <div className="container mt-5">
         <h1 className="text-dark mb-5">Contactos</h1>
+        {error && (
+          <div className="alert alert-warning text-center">{error}</div>
+        )}
         {loading ? (
           <div className="d-flex justify-content-center align-items-center vh-50">
             <Spinner animation="border" variant="dark" />
@@ -172,12 +194,11 @@ export default function ContactsPage() {
               ))
             ) : (
               <div className="text-center text-muted">
-                No se encontraron contactos
+                No existen contactos con ese nombre
               </div>
             )}
           </Row>
         )}
-
         <Pagination
           className="justify-content-center mt-4 pagination-dark"
           variant="dark"
