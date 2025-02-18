@@ -9,6 +9,8 @@ import { Spinner } from "react-bootstrap";
 export default function EditContact() {
   const router = useRouter();
   const { id } = router.query;
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
   const [contact, setContact] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -50,6 +52,25 @@ export default function EditContact() {
       return;
     }
 
+    let imagePath = "";
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image); // Asegúrate de que el campo coincide con 'file' en FileInterceptor
+
+      try {
+        const response = await api.post("/upload/file", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        imagePath = response.data.filePath;
+      } catch (error) {
+        setError("Error al subir la imagen.");
+        setLoading(false);
+        return;
+      }
+    }
+
     if (!validateNumber(contact.number)) {
       setError("El número solo debe contener entre 10 a 13 dígitos.");
       setLoading(false);
@@ -69,6 +90,16 @@ export default function EditContact() {
       console.error("Error al editar el contacto:", error);
     }
     setLoading(false);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setError("Solo se permiten imágenes.");
+    }
   };
 
   const handleChange = (e) => {
@@ -108,7 +139,7 @@ export default function EditContact() {
       <Header />
       <div className="vh-100 d-flex flex-column">
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="container-fluid">
+          <div className="container">
             <a className="navbar-brand" href="/id">
               <span className="ms-4 me-2">NovaContact</span>
               <img
@@ -158,6 +189,34 @@ export default function EditContact() {
                 <div className="text-center mb-4">
                   <div className="border rounded p-4 d-inline-block">
                     <i className="bi bi-image fs-1"></i>
+                    <div className="mb-3 text-center">
+                      <label className="form-label">Imagen de Contacto</label>
+                      <button
+                        type="button"
+                        className="btn btn-dark d-block mx-auto"
+                        onClick={() =>
+                          document.getElementById("imageInput").click()
+                        }
+                      >
+                        {preview ? (
+                          <img
+                            src={preview}
+                            alt="Preview"
+                            className="img-thumbnail"
+                            width="100"
+                          />
+                        ) : (
+                          "Seleccionar Imagen"
+                        )}
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="d-none"
+                        id="imageInput"
+                      />
+                    </div>
                   </div>
                 </div>
                 {error && <div className="alert alert-danger">{error}</div>}

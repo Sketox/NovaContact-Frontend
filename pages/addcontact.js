@@ -22,6 +22,10 @@ export default function AddContact() {
     if (file && file.type.startsWith("image/")) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
+
+      // Extraer el nombre de la imagen correctamente
+      const imageName = file.name; // Usar el nombre del archivo directamente
+      console.log("Nombre de la imagen:", imageName);
     } else {
       setError("Solo se permiten imágenes.");
     }
@@ -67,9 +71,14 @@ export default function AddContact() {
     let imagePath = "";
     if (image) {
       const formData = new FormData();
-      formData.append("image", image);
+      formData.append("file", image); // Asegúrate de que el campo coincide con 'file' en FileInterceptor
+
       try {
-        const response = await api.post("/uploadImage", formData);
+        const response = await api.post("/upload/file", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         imagePath = response.data.filePath;
       } catch (error) {
         setError("Error al subir la imagen.");
@@ -102,7 +111,7 @@ export default function AddContact() {
       <div className="vh-100 d-flex flex-column">
         {/* Navbar */}
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="container-fluid">
+          <div className="container">
             <a className="navbar-brand" href="/id">
               <span className="ms-4 me-2">NovaContact</span>
               <img

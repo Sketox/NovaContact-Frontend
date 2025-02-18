@@ -1,26 +1,33 @@
 import "../utils/globals";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 export default function Index() {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      import("bootstrap/dist/js/bootstrap.bundle.min.js");
+    }
+  }, []);
+
   return (
     <>
       <Header />
+
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div className="container">
-          <a className="navbar-brand" href="#">
-            NovaContact
+          <a className="navbar-brand" href="/id">
+            <span className="ms-4 me-2">NovaContact</span>
+            <img
+              src="/NovaContactLogo.svg"
+              alt="NovaContact Logo"
+              width="30"
+              height="30"
+              className="d-inline-block align-text-center"
+            />
           </a>
-          <img
-            src="/NovaContactLogo.svg"
-            alt="NovaContact Logo"
-            width="30"
-            height="30"
-            className="d-inline-block align-text-center"
-          />
           <button
             className="navbar-toggler"
             type="button"
@@ -42,6 +49,11 @@ export default function Index() {
                 </a>
               </li>
               <li className="nav-item">
+                <a className="nav-link" href="#integrantes">
+                  Integrantes
+                </a>
+              </li>
+              <li className="nav-item">
                 <a className="nav-link" href="#contacto">
                   Contacto
                 </a>
@@ -54,54 +66,38 @@ export default function Index() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <header className="bg-light text-center py-5">
+      {/* Hero Section con background y mayor altura */}
+      <header
+        className="text-center d-flex align-items-center justify-content-center"
+        style={{
+          backgroundImage: "url(/darkbackground2.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          color: "white",
+          height: "80vh",
+        }}
+      >
         <div className="container">
-          <h1 className="display-4">
-            Bienvenido a NovaContact
-            <img
-              src="/NovaContactLogo.svg"
-              alt="NovaContact Logo"
-              width="40"
-              height="40"
-              className="d-inline-block align-text-center m-3"
-            />
-          </h1>
+          <h1 className="display-4 fw-bold">Bienvenido a NovaContact</h1>
           <p className="lead">
-            NovaContact es la herramienta perfecta para gestionar tus contactos.
-            En un mundo donde la información está en constante flujo, es
-            esencial contar con una plataforma eficiente y accesible. Nuestra
-            agenda te permite almacenar, editar y organizar la información de
-            tus contactos de manera rápida y sin complicaciones. Los usuarios
-            podrán añadir y actualizar fácilmente detalles como nombres,
-            direcciones de correo electrónico, números de teléfono, y mucho más.
-            Con una interfaz limpia y moderna, esta agenda web está diseñada
-            para simplificar tu vida diaria, brindándote acceso a tus contactos
-            cuando más lo necesites, sin importar el dispositivo.
+            Tu herramienta para gestionar contactos de manera eficiente.
           </p>
         </div>
       </header>
 
       {/* Objetivo */}
-      <section id="objetivo" className="py-5 container">
-        <h2 className="text-center">¿Por qué fue creada esta agenda?</h2>
-        <p className="text-center">
-          Esta agenda digital fue desarrollada para ofrecer una forma sencilla y
-          rápida de administrar contactos, facilitando su organización y acceso.
-          En un mundo tan interconectado, tener todos tus contactos organizados
-          y a mano es más importante que nunca. NovaContact fue creada con el
-          objetivo de ayudar a las personas a gestionar sus relaciones, tanto
-          personales como profesionales, de manera eficiente. Al ofrecer una
-          plataforma intuitiva y segura, buscamos que todos los usuarios puedan
-          acceder a su información sin dificultad y con la certeza de que está
-          almacenada de manera segura.
+      <section id="objetivo" className="py-5 container text-center">
+        <h2 className="fw-bold">¿Por qué fue creada esta agenda?</h2>
+        <p className="text-muted">
+          NovaContact ayuda a organizar y administrar tus contactos personales y
+          profesionales de manera segura y accesible.
         </p>
       </section>
 
       {/* Tecnologías */}
       <section id="tecnologias" className="bg-light py-5">
         <div className="container text-center">
-          <h2>Tecnologías Utilizadas</h2>
+          <h2 className="fw-bold">Tecnologías Utilizadas</h2>
           <div
             id="tecnologiasCarousel"
             className="carousel slide mt-4"
@@ -110,14 +106,10 @@ export default function Index() {
             <div className="carousel-inner">
               <div className="carousel-item active">
                 <img
-                  src="/next.svg"
+                  src="/bootstrap-social.png"
                   className="d-block w-100"
                   alt="Bootstrap"
                 />
-                <div className="carousel-caption d-none d-md-block">
-                  <h4>Bootstrap</h4>
-                  <p>Framework CSS para diseño web responsivo.</p>
-                </div>
               </div>
               <div className="carousel-item">
                 <img
@@ -125,10 +117,6 @@ export default function Index() {
                   className="d-block w-100"
                   alt="Firebase"
                 />
-                <div className="carousel-caption d-none d-md-block">
-                  <h4>Firebase</h4>
-                  <p>Base de datos en la nube y autenticación.</p>
-                </div>
               </div>
               <div className="carousel-item">
                 <img
@@ -136,10 +124,6 @@ export default function Index() {
                   className="d-block w-100"
                   alt="NestJS"
                 />
-                <div className="carousel-caption d-none d-md-block">
-                  <h4>NestJS</h4>
-                  <p>Backend escalable con TypeScript.</p>
-                </div>
               </div>
               <div className="carousel-item">
                 <img
@@ -147,10 +131,6 @@ export default function Index() {
                   className="d-block w-100"
                   alt="NestJS"
                 />
-                <div className="carousel-caption d-none d-md-block">
-                  <h4>NestJS</h4>
-                  <p>Backend modular y eficiente.</p>
-                </div>
               </div>
             </div>
             <button
@@ -163,7 +143,6 @@ export default function Index() {
                 className="carousel-control-prev-icon"
                 aria-hidden="true"
               ></span>
-              <span className="visually-hidden">Previous</span>
             </button>
             <button
               className="carousel-control-next"
@@ -175,20 +154,51 @@ export default function Index() {
                 className="carousel-control-next-icon"
                 aria-hidden="true"
               ></span>
-              <span className="visually-hidden">Next</span>
             </button>
           </div>
         </div>
       </section>
 
+      {/* Integrantes del Proyecto */}
+      <section id="integrantes" className="py-5 container text-center">
+        <h2 className="fw-bold">Integrantes del Proyecto</h2>
+        <div className="row mt-4">
+          {[
+            { nombre: "Santiago", rol: "Frontend", imagen: "Santiago.jpeg" },
+            { nombre: "Richard", rol: "Backend", imagen: "Richard.jpeg" },
+            { nombre: "Elkin", rol: "Tester", imagen: "Elkin.jpeg" },
+            {
+              nombre: "Cristopher",
+              rol: "Documentador Técnico",
+              imagen: "Cristopher.jpeg",
+            },
+          ].map((integrante, index) => (
+            <div key={index} className="col-md-3">
+              <div className="card shadow-sm">
+                <img
+                  src={`/${integrante.imagen}`}
+                  className="card-img-top"
+                  alt={integrante.nombre}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{integrante.nombre}</h5>
+                  <p className="card-text text-muted">{integrante.rol}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Contacto */}
       <section id="contacto" className="py-5 container text-center">
-        <h2>Contacto</h2>
+        <h2 className="fw-bold">Contacto</h2>
         <p>
           Si tienes dudas o sugerencias, contáctanos en{" "}
-          <a href="mailto:soporte@agendaweb.com">soporte@novacontact.com</a>
+          <a href="mailto:soporte@novacontact.com">soporte@novacontact.com</a>
         </p>
       </section>
+
       <Footer />
     </>
   );

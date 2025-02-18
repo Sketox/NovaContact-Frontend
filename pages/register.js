@@ -53,7 +53,7 @@ export default function Register() {
       <div className="vh-100 d-flex flex-column">
         {/* Navbar */}
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <div className="container-fluid">
+          <div className="container">
             <a className="navbar-brand" href="/id">
               <span className="ms-4 me-2">NovaContact</span>
               <img

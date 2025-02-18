@@ -32,9 +32,24 @@ export default function ContactsPage() {
     }
     try {
       const response = await api.get(`/tutorial/getContact/${userId}`);
-      setContacts(
-        Array.isArray(response.data) ? response.data : [response.data]
-      );
+      console.log("Contacts API Response:", response.data);
+
+      const formatContact = (contact) => {
+        const imageName = contact.image
+          ? contact.image.split(/[/\\]/).pop()
+          : "";
+        const photoUrl = imageName
+          ? `/api/getImage/${imageName}`
+          : "https://via.placeholder.com/160";
+        console.log("Fetching Image from:", photoUrl);
+        return { ...contact, image: imageName, photoUrl };
+      };
+
+      const formattedContacts = Array.isArray(response.data)
+        ? response.data.map(formatContact)
+        : [formatContact(response.data)];
+
+      setContacts(formattedContacts);
     } catch (error) {
       console.error("Error fetching contacts:", error);
       setContacts([]);
@@ -51,21 +66,32 @@ export default function ContactsPage() {
     setLoading(true);
     try {
       const response = await api.get(`/tutorial/searchContact/${searchTerm}`);
+      console.log("Search API Response:", response.data);
 
-      // Validación para evitar contactos vacíos
+      const formatContact = (contact) => {
+        const imageName = contact.image
+          ? contact.image.split(/[/\\]/).pop()
+          : "";
+        const photoUrl = imageName
+          ? `/api/getImage/${imageName}`
+          : "https://via.placeholder.com/160";
+        console.log("Fetching Image from:", photoUrl);
+        return { ...contact, image: imageName, photoUrl };
+      };
+
       if (
         !response.data ||
         (Array.isArray(response.data) && response.data.length === 0)
       ) {
         setContacts([]);
       } else if (Array.isArray(response.data)) {
-        setContacts(response.data);
+        setContacts(response.data.map(formatContact));
         setError("");
       } else if (
         typeof response.data === "object" &&
         Object.keys(response.data).length > 0
       ) {
-        setContacts([response.data]); // Si es un solo objeto válido, lo convertimos en array
+        setContacts([formatContact(response.data)]);
         setError("");
       } else {
         setContacts([]);
@@ -78,7 +104,6 @@ export default function ContactsPage() {
       setLoading(false);
     }
   };
-
   const handleLogout = () => {
     setLoadingLogout(true);
     localStorage.clear();
@@ -103,8 +128,8 @@ export default function ContactsPage() {
   return (
     <div>
       <Header />
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div className="container">
           <a className="navbar-brand" href="/id">
             <span className="ms-4 me-2">NovaContact</span>
             <img
@@ -137,7 +162,16 @@ export default function ContactsPage() {
       </nav>
 
       <div className="container mt-5">
-        <h1 className="text-dark mb-5">Contactos</h1>
+        <h1 className="text-dark mb-5">
+          Contactos
+          <img
+            src="/Planet.png"
+            alt="NovaContact Logo"
+            width="50"
+            height="50"
+            className="d-inline-block align-text-center m-2"
+          />
+        </h1>
         {error && (
           <div className="alert alert-warning text-center">{error}</div>
         )}
@@ -155,8 +189,8 @@ export default function ContactsPage() {
                       <div className="d-flex align-items-center">
                         <img
                           src={
-                            contact.photoUrl
-                              ? contact.photoUrl
+                            contact.image
+                              ? contact.image
                               : "https://via.placeholder.com/160"
                           }
                           className="img-fluid rounded-start me-3"
@@ -216,17 +250,30 @@ export default function ContactsPage() {
           )}
         </Pagination>
 
-        <button
-          className="btn btn-dark btn-lg mt-3"
-          onClick={handleAddContact}
-          disabled={loadingAdd}
-        >
-          {loadingAdd ? (
-            <Spinner animation="border" size="sm" />
-          ) : (
-            "Agregar Contacto"
-          )}
-        </button>
+        <div className="d-flex justify-content-between mt-4">
+          <button
+            className="btn btn-dark btn-lg"
+            onClick={() => router.push("/addcontact")}
+            disabled={loadingAdd}
+          >
+            {loadingAdd ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              "Agregar Contacto"
+            )}
+          </button>
+          <button
+            className="btn btn-danger btn-lg"
+            onClick={handleLogout}
+            disabled={loadingLogout}
+          >
+            {loadingLogout ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              "Cerrar Sesión"
+            )}
+          </button>
+        </div>
       </div>
       <Footer />
     </div>
